@@ -1,11 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
 import { ChannelProfile, CommentData } from "../types";
 
-// Initialize the API client
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
+// Helper to safely get the API key and initialize client
+const getAIClient = () => {
+  const apiKey = typeof process !== "undefined" ? process.env.API_KEY : undefined;
+  // If no key is found, the SDK will throw a descriptive error when used, 
+  // or we can handle it here. 
+  // Note: We cast to string because the type definition expects a string, 
+  // and we handle the missing key logic in the UI or via try/catch.
+  return new GoogleGenAI({ apiKey: apiKey as string });
+};
 
 export const analyzeChannelProfile = async (channelIdentifier: string): Promise<Partial<ChannelProfile>> => {
   try {
+    const ai = getAIClient();
     const model = "gemini-2.5-flash";
     const prompt = `
       I need to configure an AI persona for a YouTube channel identified by: "${channelIdentifier}".
@@ -61,6 +69,7 @@ export const generateReply = async (
   comment: CommentData
 ): Promise<string> => {
   try {
+    const ai = getAIClient();
     const model = "gemini-2.5-flash";
 
     const systemInstruction = `

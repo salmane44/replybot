@@ -15,6 +15,9 @@ const INITIAL_PROFILE: ChannelProfile = {
 const AppContent: React.FC = () => {
   const [profile, setProfile] = useState<ChannelProfile>(INITIAL_PROFILE);
 
+  // Safely check for API Key presence
+  const hasApiKey = typeof process !== 'undefined' && process.env && process.env.API_KEY;
+
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-gray-100 flex flex-col">
       {/* Header */}
@@ -45,7 +48,7 @@ const AppContent: React.FC = () => {
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 lg:p-8">
         
         {/* Intro / Empty State Check */}
-        {!import.meta.env.VITE_API_KEY ? (
+        {!hasApiKey ? (
              <div className="flex items-center justify-center h-[50vh]">
                 <div className="text-center max-w-md p-8 bg-[#1e1e1e] rounded-2xl border border-red-900/30 shadow-2xl">
                     <Zap className="w-12 h-12 text-yellow-500 mx-auto mb-4" />

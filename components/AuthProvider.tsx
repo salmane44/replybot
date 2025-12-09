@@ -23,7 +23,14 @@ declare global {
 // Paste your Google Client ID here to enable real Google Sign-In.
 // You can create one at: https://console.cloud.google.com/apis/credentials
 // ------------------------------------------------------------------
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "632705540059-6ob762i3tdt94r2t841lm29ajd66pk30.apps.googleusercontent.com";
+const getClientId = () => {
+    if (typeof process !== "undefined" && process.env && process.env.GOOGLE_CLIENT_ID) {
+        return process.env.GOOGLE_CLIENT_ID;
+    }
+    return "632705540059-6ob762i3tdt94r2t841lm29ajd66pk30.apps.googleusercontent.com"; // Default/Fallback
+};
+
+const GOOGLE_CLIENT_ID = getClientId();
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
