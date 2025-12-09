@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 import { ChannelProfile, CommentData } from "../types";
 
 // Initialize the API client
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
 
 export const analyzeChannelProfile = async (channelIdentifier: string): Promise<Partial<ChannelProfile>> => {
   try {

@@ -45,7 +45,7 @@ const AppContent: React.FC = () => {
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 lg:p-8">
         
         {/* Intro / Empty State Check */}
-        {!process.env.API_KEY ? (
+        {!import.meta.env.VITE_API_KEY ? (
              <div className="flex items-center justify-center h-[50vh]">
                 <div className="text-center max-w-md p-8 bg-[#1e1e1e] rounded-2xl border border-red-900/30 shadow-2xl">
                     <Zap className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
