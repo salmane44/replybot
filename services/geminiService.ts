@@ -1,14 +1,28 @@
 import { GoogleGenAI } from "@google/genai";
 import { ChannelProfile, CommentData } from "../types";
 
-// Helper to safely get the API key and initialize client
+// Helper to safely get the API key without crashing
+const getApiKey = (): string | undefined => {
+  try {
+    if (typeof process !== "undefined" && process.env) {
+      return process.env.API_KEY;
+    }
+  } catch (e) {
+    // Ignore ReferenceErrors or other env access issues
+    console.warn("Could not access process.env");
+  }
+  return undefined;
+};
+
+// Helper to initialize client safely
 const getAIClient = () => {
-  const apiKey = typeof process !== "undefined" ? process.env.API_KEY : undefined;
-  // If no key is found, the SDK will throw a descriptive error when used, 
-  // or we can handle it here. 
-  // Note: We cast to string because the type definition expects a string, 
-  // and we handle the missing key logic in the UI or via try/catch.
-  return new GoogleGenAI({ apiKey: apiKey as string });
+  const apiKey = getApiKey();
+  // We allow instantiation even if undefined, to let the SDK handle the error when a call is made,
+  // or we can throw a friendlier error here.
+  if (!apiKey) {
+    console.warn("API Key is missing. Calls will fail.");
+  }
+  return new GoogleGenAI({ apiKey: apiKey || "" });
 };
 
 export const analyzeChannelProfile = async (channelIdentifier: string): Promise<Partial<ChannelProfile>> => {

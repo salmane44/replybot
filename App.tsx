@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChannelSetup } from './components/ChannelSetup';
 import { ReplyGenerator } from './components/ReplyGenerator';
 import { AuthProvider } from './components/AuthProvider';
@@ -14,9 +14,23 @@ const INITIAL_PROFILE: ChannelProfile = {
 
 const AppContent: React.FC = () => {
   const [profile, setProfile] = useState<ChannelProfile>(INITIAL_PROFILE);
+  const [hasApiKey, setHasApiKey] = useState<boolean>(true); // Assume true initially to prevent flash of error, then validate.
+  const [isCheckingEnv, setIsCheckingEnv] = useState(true);
 
-  // Safely check for API Key presence
-  const hasApiKey = typeof process !== 'undefined' && process.env && process.env.API_KEY;
+  useEffect(() => {
+    try {
+      const key = typeof process !== 'undefined' && process.env ? process.env.API_KEY : undefined;
+      setHasApiKey(!!key);
+    } catch (e) {
+      setHasApiKey(false);
+    } finally {
+      setIsCheckingEnv(false);
+    }
+  }, []);
+
+  if (isCheckingEnv) {
+    return <div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center text-gray-500">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-gray-100 flex flex-col">
